@@ -47,7 +47,9 @@ $ nix run --no-write-lock-file github:numtide/nixpkgs-unfree#slack
 ## Missing features
 
 * Keep nixpkgs channels in sync. See #1
-* allow broken and other types of packages as well?
+* Allow broken and other types of packages as well?
+* Move to nix-community?
+* Add a binary cache?
 
 ## License
 
