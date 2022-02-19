@@ -1,5 +1,6 @@
 { system ? builtins.currentSystem
-, nixpkgs ? import <nixpkgs> {
+, inputs ? import ./flake.lock.nix
+, nixpkgs ? import inputs.nixpkgs {
     inherit system;
     config = { allowUnfree = true; };
   }
