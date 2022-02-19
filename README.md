@@ -1,5 +1,7 @@
 # nixpkgs-unfree - nixpkgs with the unfree bits enabled
 
+**STATUS: alpha**
+
 The [nixpkgs](https://github.com/NixOS/nixpkgs) project contains package
 definitions for free and unfree packages but only builds free packages. This
 project is complementary. We're enabling the unfree bits and pushing those to
@@ -77,6 +79,13 @@ The following channels are updated daily (more in the future):
 * nixos-unstable
 * nixpkgs-unstable
 
-## License
+## Terms and Conditions
 
-MIT
+All the code in this repository is published under the MIT and will always
+remain under an OSI-compliant license.
+
+The binary cache is available for free during the beta and will always remain
+free for non-commercial usage.
+
+If you're interested in getting professional and priority support
+[get in touch!](https://numtide.com/#contact).
