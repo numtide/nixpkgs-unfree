@@ -1,0 +1,29 @@
+name: Sync channels
+
+on: 
+  schedule:
+    - cron: "15 14 * * *" # daily
+  workflow_dispatch: # on button click
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        branch:
+        - nixos-unstable
+        - nixpkgs-unstable
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        # Flakes don't like shallow clones
+        fetch-depth: 0
+    - uses: cachix/install-nix-action@v15
+    - name: configure git
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+    - run: ./sync.sh ${{ matrix.branch }}
+
