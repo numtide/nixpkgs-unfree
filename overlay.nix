@@ -30,6 +30,8 @@ final: prev: {
     "lapack"
     "mpich"
     "openmpi"
+    "python3Packages.jaxlibWithCuda"
+    "python3Packages.tensorflowWithCuda"
     "ucx"
   ];
 }
