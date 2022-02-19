@@ -7,7 +7,7 @@
     extra-trusted-public-keys = [ "nixpkgs-unfree.cachix.org-1:hqvoInulhbV4nJ9yJOEr+4wxhDV4xq2d1DK7S6Nj6rs=" ];
   };
 
-  outputs = { self, nixpkgs }:
+  outputs = inputs@{ self, nixpkgs }:
     let
       # Support the same list of systems as upstream.
       systems = lib.systems.supported.hydra;
@@ -18,13 +18,8 @@
 
       x = eachSystem (system:
         import ./. {
-          nixpkgs = import nixpkgs {
-            inherit system;
-            config = { allowUnfree = true; };
-          };
+          inherit system inputs;
           lib = nixpkgs.lib;
-          # Should not be needed
-          system = null;
         }
       );
 
