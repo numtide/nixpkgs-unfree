@@ -10,12 +10,19 @@ our cache.  It also makes the flake use-case a bit easier to use.
 Initially, this project spawned from the reflections drawn in and is now
 expanding to provide a wider set of features.
 
-## Usage
+## Features
 
 ### Binary cache
 
 The CI is pushing build results to <https://nixpkgs-unfree.cachix.org>. The
 site provides instructions on adding the cache to your system.
+
+### CUDA / performance packages
+
+Some packages have been changed to use the better-performing proprietary
+libraries. Think MPI / Blas / Lapack / ...
+
+To see the full list, look at the [overlay](./overlay.nix).
 
 ### Flake usage
 
@@ -84,8 +91,7 @@ The following channels are updated daily (more in the future):
 All the code in this repository is published under the MIT and will always
 remain under an OSI-compliant license.
 
-The binary cache is available for free during the beta and will always remain
-free for non-commercial usage.
+The binary cache is available for free for non-commercial usage.
 
-If you're interested in getting professional and priority support
+If you're interested in supporting this project,
 [get in touch!](https://numtide.com/#contact).

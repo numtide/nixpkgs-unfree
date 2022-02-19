@@ -31,5 +31,8 @@
 
       # And load all the unfree+redistributable packages as checks
       checks = eachSystem (system: x.${system}.checks);
+
+      # Expose our own unfree overrides
+      overlay = ./overlay.nix;
     };
 }
