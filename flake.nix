@@ -1,6 +1,5 @@
 {
-
-  description = "nixpkgs, but with allowUnfree = true";
+  description = "nixpkgs with the unfree bits enabled";
 
   nixConfig = {
     extra-substituters = [ "https://nixpkgs-unfree.cachix.org" ];
@@ -22,7 +21,6 @@
           lib = nixpkgs.lib;
         }
       );
-
     in
     {
       # Inherit from upstream
