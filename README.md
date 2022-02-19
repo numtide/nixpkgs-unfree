@@ -60,17 +60,22 @@ a separate instance:
 
 ### Nix run
 
-Thanks to this flake, it becomes now possible to run unfree packages. Eg:
+Thanks to this flake, it make it easy to run unfree packages. Eg:
 
 ```console
-$ nix run github:numtide/nixpkgs-unfree#slack
+$ nix run github:numtide/nixpkgs-unfree/nixos-unstable#slack
 ```
 
-## Missing features
+See the "supported channels" section to find out which channels are being synched.
 
-* Keep nixpkgs channels in sync. See #1
-* Allow broken and other types of packages as well?
-* Move to nix-community?
+## Supported channels
+
+FIXME: channel branches are currently force-pushed so they shouldn't be used as pinned sources.
+
+The following channels are updated daily (more in the future):
+
+* nixos-unstable
+* nixpkgs-unstable
 
 ## License
 
