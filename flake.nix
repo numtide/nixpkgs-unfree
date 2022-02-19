@@ -2,6 +2,11 @@
 
   description = "nixpkgs, but with allowUnfree = true";
 
+  nixConfig = {
+    extra-substituters = [ "https://nixpkgs-unfree.cachix.org" ];
+    extra-trusted-public-keys = [ "nixpkgs-unfree.cachix.org-1:hqvoInulhbV4nJ9yJOEr+4wxhDV4xq2d1DK7S6Nj6rs=" ];
+  };
+
   outputs = { self, nixpkgs }:
     let
       # Only support systems for which we have a CI for.
