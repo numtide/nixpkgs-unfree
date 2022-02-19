@@ -9,8 +9,8 @@
 
   outputs = { self, nixpkgs }:
     let
-      # Only support systems for which we have a CI for.
-      systems = [ "x86_64-linux" ];
+      # Support the same list of systems as upstream.
+      systems = lib.systems.supported.hydra;
 
       lib = nixpkgs.lib;
 
