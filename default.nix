@@ -1,5 +1,5 @@
 { system ? builtins.currentSystem
-, inputs ? import ./flake.lock.nix
+, inputs ? (builtins.getFlake (builtins.toString ./.)).inputs
 , nixpkgs ? import inputs.nixpkgs {
     inherit system;
     config = {

@@ -2,7 +2,7 @@ name: Sync channels
 
 on: 
   schedule:
-    - cron: "15 14 * * *" # daily
+    - cron: "03 00 * * *" # daily
   workflow_dispatch: # on button click
 jobs:
   sync:
@@ -20,7 +20,13 @@ jobs:
       with:
         # Flakes don't like shallow clones
         fetch-depth: 0
-    - uses: cachix/install-nix-action@v15
+    - name: Install nix
+      uses: cachix/install-nix-action@v16
+      with:
+        install_url: https://releases.nixos.org/nix/nix-2.5.1/install
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
     - name: configure git
       run: |
         git config user.name github-actions
