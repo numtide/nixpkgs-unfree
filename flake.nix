@@ -14,8 +14,11 @@
 
   outputs = inputs@{ self, nixpkgs }:
     let
-      # Support the same list of systems as upstream.
-      systems = lib.systems.supported.hydra;
+      # OLD: Support the same list of systems as upstream.
+      # systems = lib.systems.supported.hydra; 
+      # NEW: Support only the platforms we have builders for
+      # ...otherwise hercules dashboard gets too noisy
+      systems = [ "x86_64-linux" "i686-linux" ];
 
       lib = nixpkgs.lib;
 
