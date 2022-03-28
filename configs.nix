@@ -7,7 +7,9 @@ let
     "lapack"
     "mpich"
     "openmpi"
+    "python3Packages.colmapWithCuda"
     "python3Packages.jaxlibWithCuda"
+    "python3Packages.pytorch"
     "python3Packages.tensorflowWithCuda"
     "ucx"
   ];
