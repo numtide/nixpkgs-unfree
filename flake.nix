@@ -20,7 +20,6 @@
       lib = nixpkgs.lib;
 
       eachSystem = lib.genAttrs systems;
-      eachPython = lib.genAttrs [ "python38" "python39" "python310" ];
 
       x = eachSystem (system:
         import ./. {
@@ -46,14 +45,6 @@
         onPush.default = {
           outputs = { ... }: {
             nixpkgs-unfree = self.checks;
-            effects = {
-              packageTests = eachSystem (system:
-                eachPython (python:
-                  {
-                    pytorch = self.legacyPackages.${system}.${python}.pkgs.pytorch.tests;
-                  })
-              );
-            };
           };
         };
       };

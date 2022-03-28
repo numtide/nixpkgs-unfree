@@ -1,14 +1,6 @@
 { system ? builtins.currentSystem
 , inputs ? (builtins.getFlake (builtins.toString ./.)).inputs
-, nixpkgs ? import inputs.nixpkgs {
-    inherit system;
-    config = {
-      allowUnfree = true;
-      cudaSupport = true;
-    };
-    overlays = [ (import ./overlay.nix) ];
-  }
-, lib ? nixpkgs.lib
+, lib ? inputs.nixpkgs.lib
 , debug ? false
 }:
 let
@@ -54,11 +46,6 @@ let
     hasLicense pkg &&
     isUnfreeRedistributable (lib.lists.toList pkg.meta.license);
 
-  unfreeRedistributablePackages = packagesWith
-    ""
-    (name: pkg: hasUnfreeRedistributableLicense pkg)
-    nixpkgs;
-
   /* Return an attribute from a nested attribute set.
 
     Example:
@@ -74,14 +61,30 @@ let
     lib.attrByPath attrPath_ (abort "cannot find attribute `" + attrPath "'")
   ;
 
-  extraChecks = map
-    (name: lib.nameValuePair (lib.replaceStrings [ "." ] [ "_" ] name) (getAttr name nixpkgs))
-    nixpkgs.extraChecks;
+  configs = import ./configs.nix;
+  nixpkgsInstances = lib.mapAttrs
+    (name: config: import inputs.nixpkgs ({ inherit system; } // config))
+    configs;
+
+  unfreeRedistributablePackages = lib.mapAttrs
+    (name: pkgs: packagesWith
+      ""
+      (name: pkg: hasUnfreeRedistributableLicense pkg)
+      pkgs)
+    nixpkgsInstances;
+
+  extraChecks = lib.mapAttrs
+    (name: pkgs: map
+      (name: lib.nameValuePair (lib.replaceStrings [ "." ] [ "_" ] name) (getAttr name pkgs))
+      pkgs.extraChecks)
+    nixpkgsInstances;
 in
 {
   # Export the whole tree
-  legacyPackages = nixpkgs;
+  legacyPackages = nixpkgsInstances.vanilla;
 
   # Returns the recursive set of unfree but redistributable packages as checks
-  checks = lib.listToAttrs (unfreeRedistributablePackages ++ extraChecks);
+  checks = lib.mapAttrs
+    (name: _: lib.listToAttrs (unfreeRedistributablePackages.${name} ++ extraChecks.${name}))
+    nixpkgsInstances;
 }
