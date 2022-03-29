@@ -36,9 +36,11 @@ let
 
   extraPackages = [
     [ "blas" ]
-    [ "cudatool]kit" ]
+    [ "cudatoolkit" ]
     [ "lapack" ]
     [ "mpich" ]
+    [ "nccl" ]
+    [ "opencv" ]
     [ "openmpi" ]
     [ "ucx" ]
     [ "blender" ]
@@ -52,16 +54,24 @@ let
           pkg = [
             "caffe"
             "chainer"
+            "cupy"
             "jaxlib"
             "Keras"
             "libgpuarray"
             "mxnet"
-            "opencv"
+            "opencv4"
             "pytorch"
+            "pycuda"
             "pyrealsense2WithCuda"
             "torchvision"
             "TheanoWithCuda"
             "tensorflowWithCuda"
+            "tensorflow-probability"
+
+          ] ++ [
+            # These need to be rebuilt because of MKL
+            "numpy"
+            "scipy"
           ];
           ps = [
             "python38Packages"
