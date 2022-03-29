@@ -1,32 +1,8 @@
-let
-  # Add packages here that we want to build and that are not
-  # unfree+redistributable.
-  extraChecks = [
-    "blas"
-    "cudatoolkit"
-    "lapack"
-    "mpich"
-    "openmpi"
-    "python3Packages.colmapWithCuda"
-    "python3Packages.jaxlibWithCuda"
-    "python3Packages.pytorch"
-    "python3Packages.tensorflowWithCuda"
-    "ucx"
-  ];
-in
 {
-  vanilla =
-    let
-      overlay =
-        final: prev: {
-          inherit extraChecks;
-        };
-    in
-    {
-      config.allowUnfree = true;
-      config.cudaSupport = true;
-      overlays = [ overlay ];
-    };
+  vanilla = {
+    config.allowUnfree = true;
+    config.cudaSupport = true;
+  };
 
   mklCuda11 =
     let
@@ -54,6 +30,10 @@ in
           enableCuda = true;
         };
 
+        suitesparse = prev.suitesparse.override {
+          enableCuda = true;
+        };
+
         blas = prev.blas.override {
           blasProvider = final.mkl;
         };
@@ -61,8 +41,6 @@ in
         lapack = prev.lapack.override {
           lapackProvider = final.mkl;
         };
-
-        inherit extraChecks;
       };
     in
     {
