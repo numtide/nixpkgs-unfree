@@ -123,12 +123,13 @@ let
         ];
         cuPackages = lib.filterAttrs isCuPackage pkgs;
         stablePython = "python39Packages";
-        pyPackages = lib.genAttrs (name: pkgs.${stablePython}.${name}) [
+        pyPackages = lib.genAttrs [
           "pytorch"
           "cupy"
           "jaxlib"
           "tensorflowWithCuda"
-        ];
+        ]
+          (name: pkgs.${stablePython}.${name});
       in
       {
         inherit pyPackages;
