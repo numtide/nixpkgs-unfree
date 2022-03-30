@@ -37,6 +37,7 @@ let
   extraPackages = [
     [ "blas" ]
     [ "cudatoolkit" ]
+    [ "cudnn" ]
     [ "lapack" ]
     [ "mpich" ]
     [ "nccl" ]
@@ -109,11 +110,35 @@ let
         supported;
     in
     lib.listToAttrs kvPairs;
+
+  # List packages that we never want to be even marked as "broken"
+  # These will be checked just for x86_64-linux and for one release of python
+  neverBreak = lib.mapAttrs
+    (cfgName: pkgs:
+      let
+        isCuPackage = name: package: builtins.any (p: lib.hasPrefix p name) [
+          "cudatoolkit"
+          "cudnn"
+          "cutensor"
+        ];
+        cuPackages = lib.filterAttrs isCuPackage pkgs;
+        stablePython = "python39Packages";
+        pyPackages = lib.genAttrs (name: pkgs.${stablePython}.${name}) [
+          "pytorch"
+          "cupy"
+          "jaxlib"
+          "tensorflowWithCuda"
+        ];
+      in
+      {
+        inherit pyPackages;
+      } // cuPackages)
+    nixpkgsInstances;
 in
 {
   # Export the whole tree
   legacyPackages = nixpkgsInstances.vanilla;
 
   # Returns the recursive set of unfree but redistributable packages as checks
-  inherit checks;
+  inherit checks neverBreak;
 }

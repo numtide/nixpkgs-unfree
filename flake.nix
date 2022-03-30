@@ -42,11 +42,12 @@
       checks = eachSystem (system: x.${system}.checks);
 
       # Expose our own unfree overrides
-      overlay = ./overlay.nix;
+      overlay = builtins.head x."x86_64-linux".overlays;
 
       herculesCI = { ... }: {
-        onPush.default = {
-          outputs = self.checks;
+        onPush.default.outputs = {
+          defaultChecks = self.checks;
+          neverBreak = x."x86_64-linux".neverBreak;
         };
       };
     };
