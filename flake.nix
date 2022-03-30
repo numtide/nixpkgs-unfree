@@ -58,7 +58,7 @@
 
       herculesCI = { ... }: {
         onPush.default.outputs = {
-          defaultChecks = self.checks;
+          defaultChecks = eachSystem (system: x.${system}.checks);
         };
       };
     };
