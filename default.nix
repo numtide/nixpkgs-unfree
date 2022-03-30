@@ -75,7 +75,6 @@ let
             "scipy"
           ];
           ps = [
-            "python38Packages"
             "python39Packages"
             "python310Packages"
           ];
@@ -116,11 +115,14 @@ let
   neverBreak = lib.mapAttrs
     (cfgName: pkgs:
       let
-        isCuPackage = name: package: builtins.any (p: lib.hasPrefix p name) [
+        # removed packages (like cudatoolkit_6) are just aliases that `throw`:
+        notRemoved = pkg: (builtins.tryEval (builtins.seq pkg true)).success;
+        cuPrefixae = [
           "cudatoolkit"
           "cudnn"
           "cutensor"
         ];
+        isCuPackage = name: package: (notRemoved package) && (builtins.any (p: lib.hasPrefix p name) cuPrefixae);
         cuPackages = lib.filterAttrs isCuPackage pkgs;
         stablePython = "python39Packages";
         pyPackages = lib.genAttrs [
