@@ -137,11 +137,26 @@ let
         inherit pyPackages;
       } // cuPackages)
     nixpkgsInstances;
+
+  neverBreakOutPaths = lib.collect (a: a ? "_attr-path" && a ? "_out-path")
+    (lib.mapAttrsRecursiveCond
+      (a: !(a ? "type" && a.type == "derivation"))
+      (path: a: { _attr-path = path; _out-path = a.outPath; })
+      neverBreak);
+  neverBreakReport = nixpkgsInstances.vanilla.writeText "never-break-outpaths.txt" (lib.concatStringsSep "\n"
+    (builtins.map
+      ({ _attr-path, _out-path }:
+        let
+          result = builtins.tryEval (builtins.toString _out-path);
+          p = if result.success then result.value else "<FAILED>";
+        in
+        "${lib.concatStringsSep "." _attr-path}: ${p}")
+      neverBreakOutPaths));
 in
 {
   # Export the whole tree
   legacyPackages = nixpkgsInstances.vanilla;
 
   # Returns the recursive set of unfree but redistributable packages as checks
-  inherit checks neverBreak;
+  inherit checks neverBreak neverBreakReport;
 }

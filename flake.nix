@@ -35,23 +35,7 @@
       legacyPackages = eachSystem (system: x.${system}.legacyPackages);
 
       # And load all the unfree+redistributable packages as checks
-      checks =
-        let
-          defaultChecks = eachSystem (system: x.${system}.checks);
-
-          # I know, looks dense
-          neverBreak = lib.listToAttrs (builtins.map
-            ({ check-never-breaks, package }: lib.nameValuePair (lib.concatStringsSep "_" check-never-breaks) package)
-            (lib.collect
-              (a: a ? "check-never-breaks")
-              (lib.mapAttrsRecursiveCond
-                (a: !(a ? "type" && a.type == "derivation"))
-                (path: package: { check-never-breaks = [ "never-break" ] ++ path; inherit package; })
-                x.x86_64-linux.neverBreak)));
-        in
-        lib.recursiveUpdate defaultChecks {
-          x86_64-linux = neverBreak;
-        };
+      checks = eachSystem (system: x.${system}.checks);
 
       # Expose our own unfree overrides
       overlay = builtins.head x."x86_64-linux".overlays;
@@ -59,6 +43,7 @@
       herculesCI = { ... }: {
         onPush.default.outputs = {
           defaultChecks = self.checks;
+          neverBreak = x.x86_64-linux.neverBreakReport;
         };
       };
     };
