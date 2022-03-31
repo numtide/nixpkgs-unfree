@@ -43,7 +43,7 @@
       herculesCI = { ... }: {
         onPush.default.outputs = {
           defaultChecks = self.checks;
-          neverBreak = x.x86_64-linux.neverBreakReport;
+          neverBreak = x.x86_64-linux.neverBreak;
         };
       };
     };
