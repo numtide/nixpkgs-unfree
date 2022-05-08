@@ -2,7 +2,11 @@
 , inputs ? import ./flake.lock.nix
 , nixpkgs ? import inputs.nixpkgs {
     inherit system;
-    config = { allowUnfree = true; };
+    config = {
+      allowUnfree = true;
+      cudaSupport = true;
+    };
+    overlays = [ (import ./overlay.nix) ];
   }
 , lib ? nixpkgs.lib
 , debug ? false
@@ -50,18 +54,34 @@ let
     hasLicense pkg &&
     isUnfreeRedistributable (lib.lists.toList pkg.meta.license);
 
+  unfreeRedistributablePackages = packagesWith
+    ""
+    (name: pkg: hasUnfreeRedistributableLicense pkg)
+    nixpkgs;
+
+  /* Return an attribute from a nested attribute set.
+
+    Example:
+    x = {a = { b = 3; }; }
+    getAttr "a.b" x
+    => 3
+    getAttr "a.floo" x
+  */
+  getAttr = attrPath:
+    let
+      attrPath_ = lib.filter lib.isString (builtins.split "\\\." attrPath);
+    in
+    lib.attrByPath attrPath_ (abort "cannot find attribute `" + attrPath "'")
+  ;
+
+  extraChecks = map
+    (name: lib.nameValuePair (lib.replaceStrings [ "." ] [ "_" ] name) (getAttr name nixpkgs))
+    nixpkgs.extraChecks;
 in
 {
   # Export the whole tree
   legacyPackages = nixpkgs;
 
   # Returns the recursive set of unfree but redistributable packages as checks
-  checks =
-    lib.listToAttrs (
-      packagesWith
-        ""
-        (name: pkg: hasUnfreeRedistributableLicense pkg)
-        nixpkgs
-    )
-  ;
+  checks = lib.listToAttrs (unfreeRedistributablePackages ++ extraChecks);
 }
