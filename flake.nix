@@ -9,7 +9,7 @@
   outputs = inputs@{ self, nixpkgs }:
     let
       # Support the same list of systems as upstream.
-      systems = lib.systems.supported.hydra;
+      systems = lib.systems.flakeExposed;
 
       lib = nixpkgs.lib;
 
