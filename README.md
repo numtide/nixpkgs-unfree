@@ -86,6 +86,11 @@ The following channels are updated daily (more in the future):
 * nixos-unstable
 * nixpkgs-unstable
 
+## Credits
+
+The first implementation of that idea was done by @domenkozar at
+<https://github.com/cachix/nixpkgs-unfree-redistributable>.
+
 ## Terms and Conditions
 
 All the code in this repository is published under the MIT and will always
