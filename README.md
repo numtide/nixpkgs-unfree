@@ -14,7 +14,7 @@ expanding to provide a wider set of features.
 
 ### Binary cache
 
-The CI is pushing build results to <https://nixpkgs-unfree.cachix.org>. The
+The CI is pushing build results to <https://numtide.cachix.org>. The
 site provides instructions on adding the cache to your system.
 
 ### CUDA / performance packages
@@ -60,8 +60,8 @@ a separate instance:
   inputs.nixpkgs-unfree.inputs.nixpkgs.follows = "nixpkgs";
 
   # Optionally, pull pre-built binaries from this project's cache
-  nixConfig.extra-substituters = [ "https://nixpkgs-unfree.cachix.org" ];
-  nixConfig.extra-trusted-public-keys = [ "nixpkgs-unfree.cachix.org-1:hqvoInulhbV4nJ9yJOEr+4wxhDV4xq2d1DK7S6Nj6rs=" ];
+  nixConfig.extra-substituters = [ "https://numtide.cachix.org" ];
+  nixConfig.extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" ];
 
   outputs = { self, nixpkgs, nixpkgs-unfree }: { ... };
 }
