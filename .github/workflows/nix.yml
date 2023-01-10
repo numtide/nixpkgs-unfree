@@ -1,0 +1,22 @@
+name: Nix
+on:
+  push:
+    branches:
+      - main
+      - nixos-unstable
+      - nixpkgs-unstable
+  pull_request:
+  workflow_dispatch:
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - [X64, Linux, nix]
+          # Dreaming
+          # - [ARM64, Linux, nix]
+          # - [ARM64, Darwin, nix]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: nix-build ci.nix --keep-going
