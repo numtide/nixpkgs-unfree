@@ -40,8 +40,8 @@ enabled:
   inputs.nixpkgs.inputs.nixpkgs.follows = "github:NixOS/nixpkgs/nixos-unstable";
 
   # Optionally, pull pre-built binaries from this project's cache
-  nixConfig.extra-substituters = [ "https://nixpkgs-unfree.cachix.org" ];
-  nixConfig.extra-trusted-public-keys = [ "nixpkgs-unfree.cachix.org-1:hqvoInulhbV4nJ9yJOEr+4wxhDV4xq2d1DK7S6Nj6rs=" ];
+  nixConfig.extra-substituters = [ "https://numtide.cachix.org" ];
+  nixConfig.extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" ];
 
   outputs = { self, nixpkgs }: { ... };
 }
