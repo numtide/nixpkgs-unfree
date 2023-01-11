@@ -11,12 +11,12 @@ jobs:
   build:
     strategy:
       matrix:
-        os:
-          - [X64, Linux, nix]
-          # Dreaming
-          # - [ARM64, Linux, nix]
-          # - [ARM64, Darwin, nix]
-    runs-on: ${{ matrix.os }}
+        system:
+          - aarch64-darwin
+          - aarch64-linux
+          - x86_64-linux
+          - x86_64-darwin
+    runs-on: [nix]
     steps:
       - uses: actions/checkout@v3
-      - run: nix-build ci.nix --keep-going
+      - run: ./ci.sh --system ${{ matrix.system }}
