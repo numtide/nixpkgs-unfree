@@ -40,7 +40,16 @@ let
   ;
 
   isUnfreeRedistributable = licenses:
-    lib.lists.any (l: (!l.free or true) && (l.redistributable or false)) licenses;
+    lib.lists.any
+      (l:
+        let
+          free = l.free or true;
+          redistributable = l.redistributable or false;
+          isBSL = l == lib.licenses.bsl11;
+        in
+        isBSL || (!free && redistributable)
+      )
+      licenses;
 
   hasLicense = pkg:
     pkg ? meta.license;
@@ -51,7 +60,7 @@ let
 
   unfreeRedistributablePackages = packagesWith
     ""
-    (name: pkg: hasUnfreeRedistributableLicense pkg)
+    (name: hasUnfreeRedistributableLicense)
     nixpkgs;
 
   /* Return an attribute from a nested attribute set.
