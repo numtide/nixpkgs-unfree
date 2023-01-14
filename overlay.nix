@@ -29,6 +29,7 @@ final: prev: {
     "cudatoolkit"
     "lapack"
     "mpich"
+    "openai-whisper"
     "openmpi"
     "python3Packages.jaxlibWithCuda"
     "python3Packages.tensorflowWithCuda"
