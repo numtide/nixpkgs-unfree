@@ -22,7 +22,6 @@ else
   }
 fi
 
-export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1
 error=0
 
 for job in $(nix run github:nix-community/nix-eval-jobs -- "${args[@]}" | jq -r '. | @base64'); do
