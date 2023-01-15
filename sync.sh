@@ -29,7 +29,7 @@ nix flake update --override-flake nixpkgs "github:NixOS/nixpkgs/$branch"
 git commit -am "$branch sync"
 
 # Warm up the binary cache
-./ci.sh
+./ci.sh || true
 
 # Erase previous results
 # TODO: make the commits incremental instead

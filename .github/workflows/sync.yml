@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # on button click
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: [nix]
 
     strategy:
       fail-fast: false
