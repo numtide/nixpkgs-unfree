@@ -4,6 +4,7 @@ set -euo pipefail
 args=(
   "$@"
   --accept-flake-config
+  --check-cache-status
   --gc-roots-dir gc-root
   --max-memory-size "12000"
   --option allow-import-from-derivation false
@@ -25,10 +26,13 @@ fi
 error=0
 
 for job in $(nix run github:nix-community/nix-eval-jobs -- "${args[@]}" | jq -r '. | @base64'); do
-  job=$(echo "$job" | base64 -d)
   attr=$(echo "$job" | jq -r .attr)
-  echo "### $attr"
+  drvPath=$(echo "$job" | jq -r .drvPath)
   error=$(echo "$job" | jq -r .error)
+  isCached=$(echo "$job" | jq -r .isCached)
+  job=$(echo "$job" | base64 -d)
+  echo "### $attr"
+
   if [[ $error != null ]]; then
     log "### ❌ $attr"
     log
@@ -36,8 +40,9 @@ for job in $(nix run github:nix-community/nix-eval-jobs -- "${args[@]}" | jq -r 
     log "$error"
     log "</pre></details>"
     error=1
+  elif [[ $isCached = true ]]; then
+    log "### ✅ $attr (cached)"
   else
-    drvPath=$(echo "$job" | jq -r .drvPath)
     if ! nix-store --realize "$drvPath" 2>&1 | tee build-log.txt; then
       log "### ❌ $attr"
       log
@@ -48,9 +53,9 @@ for job in $(nix run github:nix-community/nix-eval-jobs -- "${args[@]}" | jq -r 
     else
       log "### ✅ $attr"
     fi
-    log
-    rm build-log.txt
   fi
+  log
+  rm -f build-log.txt
 done
 
 # TODO: improve the reporting
