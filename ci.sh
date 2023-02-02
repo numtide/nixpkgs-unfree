@@ -12,7 +12,7 @@ args=(
   ./ci.nix
 )
 
-if [[ -n "$GITHUB_STEP_SUMMARY" ]]; then
+if [[ -n "${GITHUB_STEP_SUMMARY-}" ]]; then
   log() {
     echo "$*" >> "$GITHUB_STEP_SUMMARY"
   }
