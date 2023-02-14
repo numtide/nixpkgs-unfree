@@ -7,8 +7,10 @@ on:
       - nixpkgs-unstable
   pull_request:
   workflow_dispatch:
+concurrency: "{{ github.head_ref ||  github.ref }}"
 jobs:
   build:
+    timeout-minutes: 10080
     strategy:
       matrix:
         system:
