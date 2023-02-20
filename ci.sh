@@ -24,7 +24,7 @@ fi
 
 error=0
 
-for job in $(nix run github:nix-community/nix-eval-jobs -- "${args[@]}" | jq -r '. | @base64'); do
+for job in $(nix-eval-jobs -- "${args[@]}" | jq -r '. | @base64'); do
   job=$(echo "$job" | base64 -d)
   attr=$(echo "$job" | jq -r .attr)
   echo "### $attr"
