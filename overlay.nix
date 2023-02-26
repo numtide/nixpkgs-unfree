@@ -32,6 +32,7 @@ final: prev: {
     "openmpi"
     "python3Packages.jaxlibWithCuda"
     "python3Packages.tensorflowWithCuda"
+    "python3Packages.pytorchWithCuda"
     "ucx"
   ];
 }
