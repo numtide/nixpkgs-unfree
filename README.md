@@ -47,6 +47,13 @@ enabled:
 }
 ```
 
+For new flakes, you can use also use our templates like this:
+
+``` console
+$ nix flake init -t github:numtide/nixpkgs-unfree
+$ nix flake init -t github:numtide/nixpkgs-unfree#devShell # for mkShell based setup
+```
+
 Or, potentially, you might want to explicitly access unfree packages and have
 a separate instance:
 
