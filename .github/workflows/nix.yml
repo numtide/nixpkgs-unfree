@@ -19,4 +19,4 @@ jobs:
     runs-on: [nix]
     steps:
       - uses: actions/checkout@v3
-      - run: ./ci.sh --system ${{ matrix.system }}
+      - run: ./ci.sh --argstr system ${{ matrix.system }}
