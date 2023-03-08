@@ -37,13 +37,15 @@ enabled:
 ```nix
 {
   inputs.nixpkgs.url = "github:numtide/nixpkgs-unfree";
-  inputs.nixpkgs.inputs.nixpkgs.follows = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
+  inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   # Optionally, pull pre-built binaries from this project's cache
   nixConfig.extra-substituters = [ "https://numtide.cachix.org" ];
   nixConfig.extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" ];
 
-  outputs = { self, nixpkgs }: { ... };
+  outputs = { self, nixpkgs, ... }: { ... };
 }
 ```
 
