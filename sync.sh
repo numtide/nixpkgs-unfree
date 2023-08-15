@@ -38,4 +38,4 @@ fi
 # ./ci.sh || true
 
 # Push if there are new changes
-git push origin "HEAD:$branch"
+git push -f origin "HEAD:$branch"
