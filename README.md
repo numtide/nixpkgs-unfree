@@ -94,6 +94,7 @@ The following channels are updated daily (more in the future):
 
 * nixos-unstable
 * nixpkgs-unstable
+* nixos-23.05
 
 ## Credits
 
