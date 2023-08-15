@@ -14,24 +14,28 @@ cleanup() {
 trap cleanup EXIT
 
 # Get the latest commit from that branch
-# git fetch origin "refs/heads/$branch:refs/heads/$branch" || true
+git fetch origin "refs/heads/main"
+git fetch origin "refs/heads/$branch" || true
 
 # Checkout that branch in a temporary worktree
-git worktree add -f -b "$branch" "$workdir"
+git worktree add -f "$workdir" "$branch"
 
 # Start working
 cd "$workdir"
 
+# Get the latest code from the main branch
+git merge --no-edit -X theirs origin/main
+
 # Get the latest flake.lock from the same upstream branch
-nix flake update --override-flake nixpkgs "github:NixOS/nixpkgs/$branch"
+nix flake update --accept-flake-config --override-flake nixpkgs "github:NixOS/nixpkgs/$branch"
 
 # Commit the changes
-git commit -am "$branch sync"
+if [[ -n $(git status --porcelain) ]]; then
+  git commit -am "flake update nixpkgs/$branch"
+fi
 
 # # Warm up the binary cache
 # ./ci.sh || true
 
-# Erase previous results
-# TODO: make the commits incremental instead
-# TODO: only push if there are some changes
-git push -f origin "HEAD:$branch"
+# Push if there are new changes
+git push origin "HEAD:$branch"
