@@ -39,4 +39,4 @@ fi
 bash
 
 # Push if there are new changes
-git push -f origin "HEAD:$branch"
+git push origin "HEAD:$branch"
