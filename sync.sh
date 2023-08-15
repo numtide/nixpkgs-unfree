@@ -24,18 +24,19 @@ git worktree add -f "$workdir" "$branch"
 cd "$workdir"
 
 # Get the latest code from the main branch
-git merge -X theirs origin/main
+git merge --no-edit -X theirs origin/main
 
 # Get the latest flake.lock from the same upstream branch
 nix flake update --accept-flake-config --override-flake nixpkgs "github:NixOS/nixpkgs/$branch"
 
 # Commit the changes
-git commit -am "$branch sync"
+if [[ -n $(git status --porcelain) ]]; then
+  git commit -am "flake update nixpkgs/$branch"
+fi
 
 # # Warm up the binary cache
 # ./ci.sh || true
 bash
 
-# Erase previous results
-# TODO: only push if there are some changes
+# Push if there are new changes
 git push origin "HEAD:$branch"
