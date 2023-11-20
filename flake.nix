@@ -17,9 +17,6 @@
       # Inherit from upstream
       inherit (nixpkgs) lib nixosModules htmlDocs;
 
-      # Expose our own unfree overrides
-      overlays.default = import ./overlay.nix;
-
       # But replace legacyPackages with the unfree version
       legacyPackages = eachSystem (system:
         import nixpkgs {
@@ -29,7 +26,6 @@
             allowUnsupportedSystem = true;
             cudaSupport = true;
           };
-          overlays = [ self.overlays.default ];
         }
       );
 
