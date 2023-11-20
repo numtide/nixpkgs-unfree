@@ -44,6 +44,16 @@
         };
       };
 
+      devShells = eachSystem (system: {
+        default = with self.legacyPackages.${system};
+          mkShell {
+            packages = [
+              jq
+              nix-eval-jobs
+            ];
+          };
+      });
+
       # And load all the unfree+redistributable packages as checks
       checks = eachSystem (system: import ./checks.nix { nixpkgs = self.legacyPackages.${system}; });
     };
