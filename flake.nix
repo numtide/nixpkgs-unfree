@@ -17,9 +17,6 @@
       # Inherit from upstream
       inherit (nixpkgs) lib nixosModules htmlDocs;
 
-      # Expose our own unfree overrides
-      overlays.default = import ./overlay.nix;
-
       # But replace legacyPackages with the unfree version
       legacyPackages = eachSystem (system:
         import nixpkgs {
@@ -29,7 +26,6 @@
             allowUnsupportedSystem = true;
             cudaSupport = true;
           };
-          overlays = [ self.overlays.default ];
         }
       );
 
@@ -43,6 +39,16 @@
           path = ./templates/default;
         };
       };
+
+      devShells = eachSystem (system: {
+        default = with self.legacyPackages.${system};
+          mkShell {
+            packages = [
+              jq
+              nix-eval-jobs
+            ];
+          };
+      });
 
       # And load all the unfree+redistributable packages as checks
       checks = eachSystem (system: import ./checks.nix { nixpkgs = self.legacyPackages.${system}; });
