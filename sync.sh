@@ -15,7 +15,9 @@ trap cleanup EXIT
 
 # Get the latest commit from that branch
 git fetch origin "refs/heads/main"
-git fetch origin "refs/heads/$branch" || true
+if ! git fetch origin "refs/heads/$branch"; then
+  git branch "$branch"
+fi
 
 # Checkout that branch in a temporary worktree
 git worktree add -f "$workdir" "$branch"
