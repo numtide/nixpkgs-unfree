@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # on button click
 jobs:
   sync:
-    runs-on: [nix]
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
@@ -18,9 +18,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        # Flakes don't like shallow clones
-        fetch-depth: 0
     - uses: cachix/install-nix-action@v15
     - name: configure git
       run: |
