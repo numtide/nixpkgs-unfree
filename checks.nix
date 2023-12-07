@@ -77,13 +77,24 @@ let
     in
     lib.attrByPath attrPath_ (abort "cannot find attribute '" + attrPath "'");
 
-  # Defined in overlays.nix extraChecks
+  # Add packages here that we want to build and that are not
+  # unfree+redistributable.
   extraChecks = map
     (name:
       lib.nameValuePair
         (lib.replaceStrings [ "." ] [ "_" ] name)
         (getAttr name nixpkgs))
-    nixpkgs.extraChecks;
+    [
+      "blas"
+      "cudatoolkit"
+      "lapack"
+      "mpich"
+      "openmpi"
+      "python3Packages.jaxlibWithCuda"
+      "python3Packages.tensorflowWithCuda"
+      "python3Packages.pytorchWithCuda"
+      "ucx"
+    ];
 in
 # Returns the recursive set of unfree but redistributable packages as checks
 lib.listToAttrs (unfreeRedistributablePackages ++ extraChecks)

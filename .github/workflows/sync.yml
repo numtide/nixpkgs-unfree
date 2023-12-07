@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # on button click
 jobs:
   sync:
-    runs-on: [nix]
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
@@ -15,12 +15,10 @@ jobs:
         - nixos-unstable
         - nixpkgs-unstable
         - nixos-23.05
+        - nixos-23.11
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        # Flakes don't like shallow clones
-        fetch-depth: 0
     - uses: cachix/install-nix-action@v15
     - name: configure git
       run: |
