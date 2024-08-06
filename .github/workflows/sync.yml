@@ -14,8 +14,7 @@ jobs:
         branch:
         - nixos-unstable
         - nixpkgs-unstable
-        - nixos-23.05
-        - nixos-23.11
+        - nixos-24.05
 
     steps:
     - uses: actions/checkout@v2
