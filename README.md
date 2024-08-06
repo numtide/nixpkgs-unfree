@@ -12,18 +12,6 @@ expanding to provide a wider set of features.
 
 ## Features
 
-### Binary cache
-
-The CI is pushing build results to <https://numtide.cachix.org>. The
-site provides instructions on adding the cache to your system.
-
-### CUDA / performance packages
-
-Some packages have been changed to use the better-performing proprietary
-libraries. Think MPI / Blas / Lapack / ...
-
-To see the full list, look at the [overlay](./overlay.nix).
-
 ### Flake usage
 
 If your flake depends on unfree packages, please consider pointing it to this
@@ -88,8 +76,6 @@ See the "supported channels" section to find out which channels are being synche
 
 ## Supported channels
 
-FIXME: channel branches are currently force-pushed so they shouldn't be used as pinned sources.
-
 The following channels are updated daily (more in the future):
 
 * nixos-unstable
@@ -105,8 +91,6 @@ The first implementation of that idea was done by @domenkozar at
 
 All the code in this repository is published under the MIT and will always
 remain under an OSI-compliant license.
-
-The binary cache is available for free for non-commercial usage.
 
 If you're interested in supporting this project,
 [get in touch!](https://numtide.com/#contact).
