@@ -21,7 +21,7 @@ jobs:
       with:
         # Our ./sync.sh script needs the whole history
         fetch-depth: 0
-    - uses: cachix/install-nix-action@v15
+    - uses: cachix/install-nix-action@v27
     - name: configure git
       run: |
         git config user.name github-actions
