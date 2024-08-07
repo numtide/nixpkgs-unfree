@@ -74,6 +74,16 @@ $ nix flake init -t github:numtide/nixpkgs-unfree
 $ nix flake init -t github:numtide/nixpkgs-unfree#devShell # for mkShell based setup
 ```
 
+### Synched channels
+
+The following channels are synched daily with upstream:
+
+* nixos-unstable
+* nixpkgs-unstable
+* nixos-24.05
+
+Let us know if any other channel is needed.
+
 ## FAQ
 
 ### nixpkgs instances
