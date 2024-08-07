@@ -4,11 +4,11 @@
 
 The [nixpkgs](https://github.com/NixOS/nixpkgs) project contains package
 definitions for free and unfree packages but only builds free packages. This
-project is complementary. We're enabling the unfree bits and pushing those to
-our cache.  It also makes the flake use-case a bit easier to use.
+project is complementary. We're enabling the unfree bits and making the flake
+use-case a bit easier to use.
 
-Initially, this project spawned from the reflections drawn in and is now
-expanding to provide a wider set of features.
+In the future, we would also like to evolve this project to build and cache
+the unfree packages.
 
 ## Features
 
