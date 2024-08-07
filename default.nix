@@ -1,5 +1,2 @@
-throw ''Some code is trying to create a new instance of nixpkgs.
-  Use `nixpkgs.legacyPackages.''${system}` instead.
-
-  See https://zimbatm.com/notes/1000-instances-of-nixpkgs
-''
+builtins.trace ''A new instance of nixpkgs-unfree is being created! See https://github.com/numtide/nixpkgs-unfree#nixpkgs-instances''
+import (import ./flake.lock.nix).nixpkgs
