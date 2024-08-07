@@ -1,13 +1,16 @@
 {
   description = "nixpkgs with the unfree bits enabled";
 
-  nixConfig.extra-substituters = [ "https://numtide.cachix.org" ];
-  nixConfig.extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" ];
-
-  outputs = inputs@{ self, nixpkgs }:
+  outputs =
+    inputs@{ self, nixpkgs }:
     let
       # Support the same list of systems as upstream.
       systems = lib.systems.flakeExposed;
+
+      hydraSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
 
       lib = nixpkgs.lib;
 
@@ -18,7 +21,8 @@
       inherit (nixpkgs) lib nixosModules htmlDocs;
 
       # But replace legacyPackages with the unfree version
-      legacyPackages = eachSystem (system:
+      legacyPackages = eachSystem (
+        system:
         import nixpkgs {
           inherit system;
           config = {
@@ -41,7 +45,8 @@
       };
 
       devShells = eachSystem (system: {
-        default = with self.legacyPackages.${system};
+        default =
+          with self.legacyPackages.${system};
           mkShell {
             packages = [
               jq
@@ -52,5 +57,10 @@
 
       # And load all the unfree+redistributable packages as checks
       checks = eachSystem (system: import ./checks.nix { nixpkgs = self.legacyPackages.${system}; });
+
+      hydraJobs = {
+        # Re-expose the flake checks as hydra jobs.
+        checks = lib.genAttrs hydraSystems (system: self.checks.${system});
+      };
     };
 }
