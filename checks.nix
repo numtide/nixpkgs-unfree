@@ -12,88 +12,46 @@ let
   #
   # It traverses nixpkgs recursively, respecting recurseForDerivations and 
   # returns a list of name/value pairs of all the packages matching "cond"
-  packagesWith = prefix: cond: set:
-    lib.flatten
-      (lib.mapAttrsToList
-        (key: v:
-          let
-            name = "${prefix}${key}";
-            result = builtins.tryEval
-              (
-                if lib.isDerivation v && cond name v then
-                # Skip packages whose closure fails on evaluation.
-                # This happens for pkgs like `python27Packages.djangoql`
-                # that have disabled Python pkgs as dependencies.
-                  builtins.seq v.outPath [ (lib.nameValuePair name v) ]
-                else if v.recurseForDerivations or false || v.recurseForRelease or false
-                # Recurse
-                then packagesWith "${name}_" cond v
-                else [ ]
-              );
-          in
-          if result.success
-          then trace name result.value
-          else [ ]
-        )
-        set
-      )
-  ;
-
-  isUnfreeRedistributable = licenses:
-    lib.lists.any
-      (l:
+  packagesWith =
+    prefix: cond: set:
+    lib.flatten (
+      lib.mapAttrsToList (
+        key: v:
         let
-          free = l.free or true;
-          redistributable = l.redistributable or false;
+          name = "${prefix}${key}";
+          result = builtins.tryEval (
+            if lib.isDerivation v && cond name v then
+              # Skip packages whose closure fails on evaluation.
+              # This happens for pkgs like `python27Packages.djangoql`
+              # that have disabled Python pkgs as dependencies.
+              builtins.seq v.outPath [ (lib.nameValuePair name v) ]
+            else if
+              v.recurseForDerivations or false || v.recurseForRelease or false
+            # Recurse
+            then
+              packagesWith "${name}_" cond v
+            else
+              [ ]
+          );
         in
-        !free && redistributable
-      )
-      licenses;
+        if result.success then trace name result.value else [ ]
+      ) set
+    );
 
-  hasLicense = pkg:
-    pkg ? meta.license;
+  isUnfreeRedistributable =
+    licenses:
+    lib.lists.any (
+      l:
+      let
+        free = l.free or true;
+        redistributable = l.redistributable or false;
+      in
+      !free && redistributable
+    ) (lib.lists.toList licenses);
 
-  hasUnfreeRedistributableLicense = pkg:
-    hasLicense pkg &&
-    isUnfreeRedistributable (lib.lists.toList pkg.meta.license);
+  hasUnfreeRedistributableLicense = pkg: isUnfreeRedistributable (pkg.meta.license or [ ]);
 
-  unfreeRedistributablePackages = packagesWith
-    ""
-    (name: hasUnfreeRedistributableLicense)
-    nixpkgs;
-
-  /* Return an attribute from a nested attribute set.
-
-              Example:
-              x = {a = { b = 3; }; }
-              getAttr "a.b" x
-              => 3
-              getAttr "a.floo" x
-            */
-  getAttr = attrPath:
-    let
-      attrPath_ = lib.filter lib.isString (builtins.split "\\\." attrPath);
-    in
-    lib.attrByPath attrPath_ (abort "cannot find attribute '" + attrPath "'");
-
-  # Add packages here that we want to build and that are not
-  # unfree+redistributable.
-  extraChecks = map
-    (name:
-      lib.nameValuePair
-        (lib.replaceStrings [ "." ] [ "_" ] name)
-        (getAttr name nixpkgs))
-    [
-      "blas"
-      "cudatoolkit"
-      "lapack"
-      "mpich"
-      "openmpi"
-      "python3Packages.jaxlibWithCuda"
-      "python3Packages.tensorflowWithCuda"
-      "python3Packages.pytorchWithCuda"
-      "ucx"
-    ];
+  unfreeRedistributablePackages = packagesWith "" (name: hasUnfreeRedistributableLicense) nixpkgs;
 in
 # Returns the recursive set of unfree but redistributable packages as checks
-lib.listToAttrs (unfreeRedistributablePackages ++ extraChecks)
+lib.listToAttrs unfreeRedistributablePackages
