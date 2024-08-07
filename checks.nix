@@ -45,9 +45,8 @@ let
         let
           free = l.free or true;
           redistributable = l.redistributable or false;
-          isBSL = l == lib.licenses.bsl11;
         in
-        isBSL || (!free && redistributable)
+        !free && redistributable
       )
       licenses;
 
