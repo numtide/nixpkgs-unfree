@@ -12,9 +12,25 @@ expanding to provide a wider set of features.
 
 ## Features
 
+### Nix run
+
+Thanks to this flake, it's shorter to run unfree packages. Eg:
+
+```console
+$ nix run github:numtide/nixpkgs-unfree/nixos-unstable#slack
+```
+
+Vs:
+
+```console
+$ NIXPKGS_ALLOW_UNFREE=1 nix run nixpkgs/nixos-unstable#slack --impure
+```
+
+See the [supported channels](#supported-channels) section to find out which channels are being synched.
+
 ### Flake usage
 
-If your flake depends on unfree packages, please consider pointing it to this
+If your flake depends on unfree packages, you can point it to this
 project to avoid creating more instances of nixpkgs. See
 <https://discourse.nixos.org/t/1000-instances-of-nixpkgs/17347> for a more
 in-depth explanation of the issue.
@@ -24,24 +40,13 @@ enabled:
 
 ```nix
 {
-  inputs.nixpkgs.url = "github:numtide/nixpkgs-unfree";
-  inputs.nixpkgs.inputs.nixpkgs.follows = "nixpkgs-unstable";
+  inputs.nixpkgs.url = "github:numtide/nixpkgs-unfree?ref=nixos-unstable";
 
-  inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-  # Optionally, pull pre-built binaries from this project's cache
-  nixConfig.extra-substituters = [ "https://numtide.cachix.org" ];
-  nixConfig.extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" ];
+  inputs.otherdep.url = "github:otheruser/otherdep";
+  inputs.otherdep.inputs.nixpkgs.follows = "nixpkgs";
 
   outputs = { self, nixpkgs, ... }: { ... };
 }
-```
-
-For new flakes, you can use also use our templates like this:
-
-``` console
-$ nix flake init -t github:numtide/nixpkgs-unfree
-$ nix flake init -t github:numtide/nixpkgs-unfree#devShell # for mkShell based setup
 ```
 
 Or, potentially, you might want to explicitly access unfree packages and have
@@ -64,35 +69,22 @@ a separate instance:
 }
 ```
 
-### Nix run
+### Flake templates
 
-Thanks to this flake, it make it easy to run unfree packages. Eg:
+For new flakes, you can use also use our templates like this:
 
-```console
-$ nix run github:numtide/nixpkgs-unfree/nixos-unstable#slack
+``` console
+$ nix flake init -t github:numtide/nixpkgs-unfree
+$ nix flake init -t github:numtide/nixpkgs-unfree#devShell # for mkShell based setup
 ```
 
-See the "supported channels" section to find out which channels are being synched.
+## FAQ
 
-### Supported channels
-
-The following channels are updated daily (more in the future):
-
-* nixos-unstable
-* nixpkgs-unstable
-* nixos-24.05
-
-### FAQ
-
-## nixpkgs instances
+### nixpkgs instances
 
 This repository includes a trace warning for code that `import nixpkgs`.
 
-In general, it's best to avoid creating new instances of nixpkgs. See
-<https://zimbatm.com/notes/1000-instances-of-nixpkgs> for a more thorough
-explanation.
-
-If another input depends on it, you can also bypass the warning by passing the
+If another input depends on it, you can bypass the warning by passing the
 real nixpkgs to it.
 
 Before:
