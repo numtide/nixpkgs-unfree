@@ -74,13 +74,50 @@ $ nix run github:numtide/nixpkgs-unfree/nixos-unstable#slack
 
 See the "supported channels" section to find out which channels are being synched.
 
-## Supported channels
+### Supported channels
 
 The following channels are updated daily (more in the future):
 
 * nixos-unstable
 * nixpkgs-unstable
 * nixos-24.05
+
+### FAQ
+
+## nixpkgs instances
+
+This repository includes a trace warning for code that `import nixpkgs`.
+
+In general, it's best to avoid creating new instances of nixpkgs. See
+<https://zimbatm.com/notes/1000-instances-of-nixpkgs> for a more thorough
+explanation.
+
+If another input depends on it, you can also bypass the warning by passing the
+real nixpkgs to it.
+
+Before:
+```nix
+{
+  inputs.nixpkgs.url = "github:numtide/nixpkgs-unfree?ref=nixos-unstable";
+
+  inputs.otherdep.url = "github:otheruser/otherdep";
+  inputs.otherdep.inputs.nixpkgs.follows = "nixpkgs";
+}
+```
+
+Assuming that "otherdep" creates a new instance of nixpkgs, change the inputs
+to:
+
+```nix
+{
+  inputs.nixpkgs.url = "github:numtide/nixpkgs-unfree?ref=nixos-unstable";
+
+  inputs.otherdep.url = "github:otheruser/otherdep";
+  inputs.otherdep.inputs.nixpkgs.follows = "nixpkgs/nixpkgs";
+}
+```
+
+With that, it will access the same version of nixpkgs as the main project.
 
 ## Credits
 
