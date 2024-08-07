@@ -1,9 +1,6 @@
 {
   description = "nixpkgs with the unfree bits enabled";
 
-  nixConfig.extra-substituters = [ "https://numtide.cachix.org" ];
-  nixConfig.extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" ];
-
   outputs = inputs@{ self, nixpkgs }:
     let
       # Support the same list of systems as upstream.

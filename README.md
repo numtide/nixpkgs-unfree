@@ -61,10 +61,6 @@ a separate instance:
   inputs.nixpkgs-unfree.url = "github:numtide/nixpkgs-unfree";
   inputs.nixpkgs-unfree.inputs.nixpkgs.follows = "nixpkgs";
 
-  # Optionally, pull pre-built binaries from this project's cache
-  nixConfig.extra-substituters = [ "https://numtide.cachix.org" ];
-  nixConfig.extra-trusted-public-keys = [ "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" ];
-
   outputs = { self, nixpkgs, nixpkgs-unfree }: { ... };
 }
 ```
