@@ -46,15 +46,13 @@ let
       ) set
     );
 
-  isUnfree =
-    pkg:
-    lib.lists.any (l: !(l.free or true))
-    (lib.lists.toList (pkg.meta.license or [ ]));
+  isUnfree = pkg: lib.lists.any (l: !(l.free or true)) (lib.lists.toList (pkg.meta.license or [ ]));
 
-  filter = pkg:
-    isUnfree pkg;
+  isNotLinuxKernel = key: !(lib.hasPrefix "linuxKernel" key || lib.hasPrefix "linuxPackages" key);
 
-  packages = packagesWith "" (_name: filter) pkgs;
+  select = key: pkg: (isUnfree pkg) && (isNotLinuxKernel key);
+
+  packages = packagesWith "" (key: select key) pkgs;
 in
-# Returns the recursive set of unfree but redistributable packages as checks
+# Returns the recursive set of packages as checks
 lib.listToAttrs packages
