@@ -48,11 +48,15 @@ let
 
   isUnfree = pkg: lib.lists.any (l: !(l.free or true)) (lib.lists.toList (pkg.meta.license or [ ]));
 
+  isSource =
+    key: pkg: !lib.lists.any (x: !(x.isSource)) (lib.lists.toList (pkg.meta.sourceProvenance or [ ]));
+
   isNotLinuxKernel = key: !(lib.hasPrefix "linuxKernel" key || lib.hasPrefix "linuxPackages" key);
 
   isNotCudaPackage = key: !(lib.hasPrefix "cuda" key);
 
-  select = key: pkg: (isUnfree pkg) && (isNotCudaPackage key) && (isNotLinuxKernel key);
+  select =
+    key: pkg: (isUnfree pkg) && (isSource key pkg) && (isNotCudaPackage key) && (isNotLinuxKernel key);
 
   packages = packagesWith "" (key: select key) pkgs;
 in
