@@ -1,7 +1,15 @@
 # Returns an attribute set of packages to build
-{ nixpkgs }:
+{ nixpkgs, system }:
 let
   lib = nixpkgs.lib;
+
+  pkgs = import nixpkgs {
+    inherit system;
+    config = {
+      allowUnfree = true;
+      cudaSupport = true;
+    };
+  };
 
   # Turn this on to debug things.
   debug = false;
@@ -46,7 +54,7 @@ let
   filter = pkg:
     isUnfree pkg;
 
-  packages = packagesWith "" (_name: filter) nixpkgs;
+  packages = packagesWith "" (_name: filter) pkgs;
 in
 # Returns the recursive set of unfree but redistributable packages as checks
 lib.listToAttrs packages
