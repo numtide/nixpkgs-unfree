@@ -50,7 +50,9 @@ let
 
   isNotLinuxKernel = key: !(lib.hasPrefix "linuxKernel" key || lib.hasPrefix "linuxPackages" key);
 
-  select = key: pkg: (isUnfree pkg) && (isNotLinuxKernel key);
+  isNotCudaPackage = key: !(lib.hasPrefix "cuda" key);
+
+  select = key: pkg: (isUnfree pkg) && (isNotCudaPackage key) && (isNotLinuxKernel key);
 
   packages = packagesWith "" (key: select key) pkgs;
 in
