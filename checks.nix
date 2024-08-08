@@ -38,20 +38,15 @@ let
       ) set
     );
 
-  isUnfreeRedistributable =
-    licenses:
-    lib.lists.any (
-      l:
-      let
-        free = l.free or true;
-        redistributable = l.redistributable or false;
-      in
-      !free && redistributable
-    ) (lib.lists.toList licenses);
+  isUnfree =
+    pkg:
+    lib.lists.any (l: !(l.free or true))
+    (lib.lists.toList (pkg.meta.license or [ ]));
 
-  hasUnfreeRedistributableLicense = pkg: isUnfreeRedistributable (pkg.meta.license or [ ]);
+  filter = pkg:
+    isUnfree pkg;
 
-  unfreeRedistributablePackages = packagesWith "" (name: hasUnfreeRedistributableLicense) nixpkgs;
+  packages = packagesWith "" (_name: filter) nixpkgs;
 in
 # Returns the recursive set of unfree but redistributable packages as checks
-lib.listToAttrs unfreeRedistributablePackages
+lib.listToAttrs packages
