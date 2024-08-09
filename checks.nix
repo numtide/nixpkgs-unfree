@@ -1,7 +1,15 @@
 # Returns an attribute set of packages to build
-{ nixpkgs }:
+{ nixpkgs, system }:
 let
   lib = nixpkgs.lib;
+
+  pkgs = import nixpkgs {
+    inherit system;
+    config = {
+      allowUnfree = true;
+      cudaSupport = true;
+    };
+  };
 
   # Turn this on to debug things.
   debug = false;
@@ -38,20 +46,19 @@ let
       ) set
     );
 
-  isUnfreeRedistributable =
-    licenses:
-    lib.lists.any (
-      l:
-      let
-        free = l.free or true;
-        redistributable = l.redistributable or false;
-      in
-      !free && redistributable
-    ) (lib.lists.toList licenses);
+  isUnfree = pkg: lib.lists.any (l: !(l.free or true)) (lib.lists.toList (pkg.meta.license or [ ]));
 
-  hasUnfreeRedistributableLicense = pkg: isUnfreeRedistributable (pkg.meta.license or [ ]);
+  isSource =
+    key: pkg: !lib.lists.any (x: !(x.isSource)) (lib.lists.toList (pkg.meta.sourceProvenance or [ ]));
 
-  unfreeRedistributablePackages = packagesWith "" (name: hasUnfreeRedistributableLicense) nixpkgs;
+  isNotLinuxKernel = key: !(lib.hasPrefix "linuxKernel" key || lib.hasPrefix "linuxPackages" key);
+
+  isNotCudaPackage = key: !(lib.hasPrefix "cuda" key);
+
+  select =
+    key: pkg: (isUnfree pkg) && (isSource key pkg) && (isNotCudaPackage key) && (isNotLinuxKernel key);
+
+  packages = packagesWith "" (key: select key) pkgs;
 in
-# Returns the recursive set of unfree but redistributable packages as checks
-lib.listToAttrs unfreeRedistributablePackages
+# Returns the recursive set of packages as checks
+lib.listToAttrs packages
