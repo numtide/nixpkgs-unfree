@@ -56,7 +56,7 @@
       });
 
       # And load all the unfree+redistributable packages as checks
-      checks = eachSystem (system: import ./checks.nix { nixpkgs = self.legacyPackages.${system}; });
+      checks = eachSystem (system: import ./checks.nix { inherit nixpkgs system; });
 
       hydraJobs = {
         # Re-expose the flake checks as hydra jobs.
