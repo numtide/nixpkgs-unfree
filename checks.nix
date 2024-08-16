@@ -55,8 +55,12 @@ let
 
   isNotCudaPackage = key: !(lib.hasPrefix "cuda" key);
 
+  canSubstituteSrc = pkg:
+    # requireFile don't allow using substituters and are therefor skipped
+    pkg.src.allowSubstitutes or true;
+
   select =
-    key: pkg: (isUnfree pkg) && (isSource key pkg) && (isNotCudaPackage key) && (isNotLinuxKernel key);
+    key: pkg: (isUnfree pkg) && (isSource key pkg) && (isNotCudaPackage key) && (isNotLinuxKernel key) && (canSubstituteSrc pkg);
 
   packages = packagesWith "" (key: select key) pkgs;
 in
