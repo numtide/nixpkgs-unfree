@@ -17,7 +17,7 @@ jobs:
         - nixos-24.05
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         # Our ./sync.sh script needs the whole history
         fetch-depth: 0
