@@ -1,10 +1,13 @@
 {
   description = "nixpkgs with the unfree bits enabled";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs = {
+      nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+      emacs-overlay.url = "github:nix-community/emacs-overlay/master";
+  };
 
   outputs =
-    inputs@{ self, nixpkgs }:
+    inputs@{ self, nixpkgs, emacs-overlay }:
     let
       # Support the same list of systems as upstream.
       systems = lib.systems.flakeExposed;
@@ -31,6 +34,7 @@
             allowUnfree = true;
             allowUnsupportedSystem = true;
           };
+          overlays = [ emacs-overlay.overlays.emacs ];
         }
       );
 
